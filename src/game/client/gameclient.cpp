@@ -1038,6 +1038,7 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 		DDRace = DDRace || DDNet || FDDrace;
 		Race = Race || FastCap || DDRace;
 	}
+	g_TeamsSameWorld = DDRace && FNG;
 
 	CGameInfo Info;
 	Info.m_FlagStartsRace = FastCap;
@@ -1060,7 +1061,7 @@ static CGameInfo GetGameInfo(const CNetObj_GameInfoEx *pInfoEx, int InfoExSize, 
 	Info.m_EntitiesDDNet = DDNet;
 	Info.m_EntitiesDDRace = DDRace;
 	Info.m_EntitiesRace = Race;
-	Info.m_EntitiesFNG = FNG;
+	Info.m_EntitiesFNG = FNG && !DDRace;
 	Info.m_EntitiesVanilla = Vanilla;
 	Info.m_EntitiesBW = BlockWorlds;
 	Info.m_Race = Race;
@@ -1763,17 +1764,17 @@ void CGameClient::OnPredict()
 	bool Dummy = g_Config.m_ClDummy ^ m_IsDummySwapping;
 	m_PredictedWorld.CopyWorld(&m_GameWorld);
 
-	// don't predict inactive players, or entities from other teams
+	// don't predict inactive players, or entities from other worlds
 	for(int i = 0; i < MAX_CLIENTS; i++)
 		if(CCharacter *pChar = m_PredictedWorld.GetCharacterByID(i))
-			if((!m_Snap.m_aCharacters[i].m_Active && pChar->m_SnapTicks > 10) || IsOtherTeam(i))
+			if((!m_Snap.m_aCharacters[i].m_Active && pChar->m_SnapTicks > 10) || IsOtherWorld(i))
 				pChar->Destroy();
 
 	CProjectile *pProjNext = 0;
 	for(CProjectile *pProj = (CProjectile *)m_PredictedWorld.FindFirst(CGameWorld::ENTTYPE_PROJECTILE); pProj; pProj = pProjNext)
 	{
 		pProjNext = (CProjectile *)pProj->TypeNext();
-		if(IsOtherTeam(pProj->GetOwner()))
+		if(IsOtherWorld(pProj->GetOwner()))
 		{
 			pProj->Destroy();
 		}
@@ -2470,7 +2471,7 @@ void CGameClient::UpdateRenderedCharacters()
 			Client()->IntraGameTick(g_Config.m_ClDummy));
 		vec2 Pos = UnpredPos;
 
-		if(Predict() && (i == m_Snap.m_LocalClientID || (AntiPingPlayers() && !IsOtherTeam(i))))
+		if(Predict() && (i == m_Snap.m_LocalClientID || (AntiPingPlayers() && !IsOtherWorld(i))))
 		{
 			m_aClients[i].m_Predicted.Write(&m_aClients[i].m_RenderCur);
 			m_aClients[i].m_PrevPredicted.Write(&m_aClients[i].m_RenderPrev);
@@ -2643,6 +2644,13 @@ bool CGameClient::IsOtherTeam(int ClientID)
 		return false;
 
 	return m_Teams.Team(ClientID) != m_Teams.Team(m_Snap.m_LocalClientID);
+}
+
+bool CGameClient::IsOtherWorld(int ClientID)
+{
+	if (g_TeamsSameWorld)
+		return false;
+	return IsOtherTeam(ClientID);
 }
 
 int CGameClient::SwitchStateTeam()

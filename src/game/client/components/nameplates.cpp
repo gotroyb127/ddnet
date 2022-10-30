@@ -35,6 +35,7 @@ void CNamePlates::RenderNameplatePos(vec2 Position, const CNetObj_PlayerInfo *pP
 	int ClientID = pPlayerInfo->m_ClientID;
 
 	bool OtherTeam = m_pClient->IsOtherTeam(ClientID);
+	bool OtherWorld = m_pClient->IsOtherWorld(ClientID);
 
 	float FontSize = 18.0f + 20.0f * g_Config.m_ClNameplatesSize / 100.0f;
 	float FontSizeClan = 18.0f + 20.0f * g_Config.m_ClNameplatesClanSize / 100.0f;
@@ -142,7 +143,7 @@ void CNamePlates::RenderNameplatePos(vec2 Position, const CNetObj_PlayerInfo *pP
 		ColorRGBA TColor;
 		ColorRGBA TOutlineColor;
 
-		if(OtherTeam && !ForceAlpha)
+		if(OtherTeam && OtherWorld && !ForceAlpha)
 		{
 			TOutlineColor = ColorRGBA(0.0f, 0.0f, 0.0f, 0.2f * g_Config.m_ClShowOthersAlpha / 100.0f);
 			TColor = ColorRGBA(rgb.r, rgb.g, rgb.b, g_Config.m_ClShowOthersAlpha / 100.0f);

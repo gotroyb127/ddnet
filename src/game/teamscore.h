@@ -4,6 +4,7 @@
 
 #include <engine/shared/protocol.h>
 
+extern bool g_TeamsSameWorld;
 enum
 {
 	TEAM_FLOCK = 0,

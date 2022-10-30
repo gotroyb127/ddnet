@@ -2,6 +2,8 @@
 #include "teamscore.h"
 #include <engine/shared/config.h>
 
+bool g_TeamsSameWorld = false;
+
 CTeamsCore::CTeamsCore()
 {
 	Reset();
@@ -9,6 +11,8 @@ CTeamsCore::CTeamsCore()
 
 bool CTeamsCore::SameTeam(int ClientID1, int ClientID2) const
 {
+	if (g_TeamsSameWorld)
+		return true;
 	return m_aTeam[ClientID1] == TEAM_SUPER || m_aTeam[ClientID2] == TEAM_SUPER || m_aTeam[ClientID1] == m_aTeam[ClientID2];
 }
 
@@ -25,6 +29,8 @@ void CTeamsCore::Team(int ClientID, int Team)
 
 bool CTeamsCore::CanKeepHook(int ClientID1, int ClientID2) const
 {
+	if (g_TeamsSameWorld)
+		return true;
 	if(m_aTeam[ClientID1] == (m_IsDDRace16 ? VANILLA_TEAM_SUPER : TEAM_SUPER) || m_aTeam[ClientID2] == (m_IsDDRace16 ? VANILLA_TEAM_SUPER : TEAM_SUPER) || ClientID1 == ClientID2)
 		return true;
 	return m_aTeam[ClientID1] == m_aTeam[ClientID2];
@@ -32,6 +38,8 @@ bool CTeamsCore::CanKeepHook(int ClientID1, int ClientID2) const
 
 bool CTeamsCore::CanCollide(int ClientID1, int ClientID2) const
 {
+	if (g_TeamsSameWorld)
+		return true;
 	if(m_aTeam[ClientID1] == (m_IsDDRace16 ? VANILLA_TEAM_SUPER : TEAM_SUPER) || m_aTeam[ClientID2] == (m_IsDDRace16 ? VANILLA_TEAM_SUPER : TEAM_SUPER) || ClientID1 == ClientID2)
 		return true;
 	if(m_aIsSolo[ClientID1] || m_aIsSolo[ClientID2])

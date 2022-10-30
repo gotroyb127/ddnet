@@ -133,8 +133,8 @@ void CPlayers::RenderHookCollLine(
 	Player = *pPlayerChar;
 
 	bool Local = m_pClient->m_Snap.m_LocalClientID == ClientID;
-	bool OtherTeam = m_pClient->IsOtherTeam(ClientID);
-	float Alpha = (OtherTeam || ClientID < 0) ? g_Config.m_ClShowOthersAlpha / 100.0f : 1.0f;
+	bool OtherWorld = m_pClient->IsOtherWorld(ClientID);
+	float Alpha = (OtherWorld || ClientID < 0) ? g_Config.m_ClShowOthersAlpha / 100.0f : 1.0f;
 	Alpha *= (float)g_Config.m_ClHookCollAlpha / 100;
 
 	float IntraTick = Intra;
@@ -285,8 +285,8 @@ void CPlayers::RenderHook(
 	if(ClientID >= 0)
 		IntraTick = (m_pClient->m_aClients[ClientID].m_IsPredicted) ? Client()->PredIntraGameTick(g_Config.m_ClDummy) : Client()->IntraGameTick(g_Config.m_ClDummy);
 
-	bool OtherTeam = m_pClient->IsOtherTeam(ClientID);
-	float Alpha = (OtherTeam || ClientID < 0) ? g_Config.m_ClShowOthersAlpha / 100.0f : 1.0f;
+	bool OtherWorld = m_pClient->IsOtherWorld(ClientID);
+	float Alpha = (OtherWorld || ClientID < 0) ? g_Config.m_ClShowOthersAlpha / 100.0f : 1.0f;
 
 	RenderInfo.m_Size = 64.0f;
 
@@ -358,8 +358,8 @@ void CPlayers::RenderPlayer(
 	CTeeRenderInfo RenderInfo = *pRenderInfo;
 
 	bool Local = m_pClient->m_Snap.m_LocalClientID == ClientID;
-	bool OtherTeam = m_pClient->IsOtherTeam(ClientID);
-	float Alpha = (OtherTeam || ClientID < 0) ? g_Config.m_ClShowOthersAlpha / 100.0f : 1.0f;
+	bool OtherWorld = m_pClient->IsOtherWorld(ClientID);
+	float Alpha = (OtherWorld || ClientID < 0) ? g_Config.m_ClShowOthersAlpha / 100.0f : 1.0f;
 
 	// set size
 	RenderInfo.m_Size = 64.0f;

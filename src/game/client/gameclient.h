@@ -524,6 +524,7 @@ public:
 	void DummyResetInput() override;
 	void Echo(const char *pString) override;
 	bool IsOtherTeam(int ClientID);
+	bool IsOtherWorld(int ClientID);
 	int SwitchStateTeam();
 	bool IsLocalCharSuper();
 	bool CanDisplayWarning() override;

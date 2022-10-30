@@ -27,7 +27,7 @@ void CFreezeBars::RenderFreezeBar(const int ClientID)
 	Position.x -= FreezeBarHalfWidth;
 	Position.y += 32;
 
-	float Alpha = m_pClient->IsOtherTeam(ClientID) ? g_Config.m_ClShowOthersAlpha / 100.0f : 1.0f;
+	float Alpha = m_pClient->IsOtherWorld(ClientID) ? g_Config.m_ClShowOthersAlpha / 100.0f : 1.0f;
 	if(pCharacter->m_IsInFreeze)
 	{
 		Alpha *= g_Config.m_ClFreezeBarsAlphaInsideFreeze / 100.0f;
